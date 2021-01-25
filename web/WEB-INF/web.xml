@@ -8,6 +8,10 @@
         <servlet-name>procesarInicioSesion</servlet-name>
         <servlet-class>servlets.procesarInicioSesion</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>inicioCliente</servlet-name>
+        <servlet-class>servlets.inicioCliente</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>iniciarSesion</servlet-name>
         <url-pattern>/iniciarSesion</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>procesarInicioSesion</servlet-name>
         <url-pattern>/procesarInicioSesion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>inicioCliente</servlet-name>
+        <url-pattern>/inicioCliente</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

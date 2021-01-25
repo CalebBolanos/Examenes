@@ -64,7 +64,7 @@ public class iniciarSesion extends HttpServlet {
                     + "        <div class=\"layout\">\n"
                     + "            <div class=\"tarjeta\">\n"
                     + "                <h2 class=\"mdl-card__title-text\">Iniciar Sesion</h2>\n"
-                    + "                <form method=\"POST\" action=\"#\">\n"
+                    + "                <form method=\"POST\" action=\"procesarInicioSesion\">\n"
                     + "                    <div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\">\n"
                     + "                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"usuario\" name=\"usuario\" required>\n"
                     + "                        <label class=\"mdl-textfield__label\" for=\"usuario\">Usuario</label>\n"

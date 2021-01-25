@@ -6,11 +6,16 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,18 +34,47 @@ public class procesarInicioSesion extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet procesarInicioSesion</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet procesarInicioSesion at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String usuario = request.getParameter("usuario");
+        String contrasena = request.getParameter("contrasena");
+        System.out.println(usuario);
+        System.out.println(contrasena);
+        boolean verificado = false;
+
+        if (Validaciones.StringsNoVacios(usuario, contrasena)) {
+            try {
+                Conexion base = new Conexion();
+                base.conectar();
+                ResultSet rs = base.ejecutaQuery("call spIniciarSesion(\""+usuario+"\", \""+contrasena+"\");");
+                if (rs.next()) {
+                    if (rs.getString("msj").equals("ok")) {
+                        verificado = true;
+                        int id = rs.getInt("id");
+                        int tipo = rs.getInt("tipo");
+                        String nombre = rs.getString("nom");
+                        String paterno = rs.getString("pat");
+                        String materno = rs.getString("mat");
+                        String correo = rs.getString("corr");
+
+                        HttpSession sesion = request.getSession();
+                        sesion.setAttribute("id", id);
+                        sesion.setAttribute("tipo", tipo);
+                        sesion.setAttribute("nombre", nombre);
+                        sesion.setAttribute("paterno", paterno);
+                        sesion.setAttribute("materno", materno);
+                        sesion.setAttribute("correo", correo);
+                    } 
+                    base.cierraConexion();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(procesarInicioSesion.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if (verificado) {
+                response.sendRedirect("inicioCliente");
+            } else {
+                response.sendRedirect("iniciarSesion");
+            }
+
         }
     }
 
