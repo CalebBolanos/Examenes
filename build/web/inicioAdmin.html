@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Inicio</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-indigo.min.css" />
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <style>
+            .seleccionado{
+                background: linear-gradient(to right, #00B4DB, #2948ff);
+                font-size: 15px;
+                color: white !important;
+            }
+
+            .disponible{
+                font-size: 15px;
+                transition: all 0.3s;
+            }
+            .layout {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .botones{
+                margin-top: 10px; 
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <span class="mdl-layout-title">Inicio</span>
+                    <div class="mdl-layout-spacer"></div>
+                    <nav class="mdl-navigation mdl-layout--large-screen-only">
+                        <a class="mdl-navigation__link" href="">Nombre</a>
+                        <a class="mdl-navigation__link" href="">Cerrar Sesion</a>
+                    </nav>
+                </div>
+            </header>
+            <div class="mdl-layout__drawer">
+                <span class="mdl-layout-title">Examenes</span>
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link seleccionado" href="" >Incio</a>
+                    <a class="mdl-navigation__link disponible" href="">Registrar Usuarios</a>
+                    <a class="mdl-navigation__link disponible" href="">Añadir Reactivos</a>
+                    <a class="mdl-navigation__link disponible" href="">Crear Nuevo Examen</a>
+                    <a class="mdl-navigation__link disponible" href="">Información adicional</a>
+                </nav>
+            </div>
+            <main class="mdl-layout__content">
+                <div class="page-content layout">
+                    <div>
+                        <h4>Menu principal</h4>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones">
+                            Registrar Usuarios
+                        </button><br />
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones">
+                            Añadir Reactivos
+                        </button><br />
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones">
+                            Crear Nuevo Examen
+                        </button><br />
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones">
+                            Información adicional
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
