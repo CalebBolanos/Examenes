@@ -10,7 +10,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-indigo.min.css" />
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <style>
             .tarjeta {
@@ -39,11 +39,11 @@ and open the template in the editor.
                 <h2 class="mdl-card__title-text">Iniciar Sesion</h2>
                 <form method="POST" action="#">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="usuario" name="usuario">
+                        <input class="mdl-textfield__input" type="text" id="usuario" name="usuario" required>
                         <label class="mdl-textfield__label" for="usuario">Usuario</label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="contrasena" name="contrasena">
+                        <input class="mdl-textfield__input" type="text" id="contrasena" name="contrasena" required>
                         <label class="mdl-textfield__label" for="contrasena">Contrasena</label>
                     </div>
                     <input type="submit" value="Iniciar Sesion" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" />
