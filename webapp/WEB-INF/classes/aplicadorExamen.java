@@ -4,18 +4,33 @@
  * and open the template in the editor.
  */
 
+//import evaluadorexamenes.Examen;
+//import evaluadorexamenes.Reactivo;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author calebbolanos
  */
 public class aplicadorExamen extends HttpServlet {
+
+    HttpSession sesion;
+    Examen examen;
+    Vector<Reactivo> reactivos;
+
+    Conexion base;
+    int posicionPregunta;
+
+    String htmlPreguntas = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,6 +44,58 @@ public class aplicadorExamen extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        sesion = request.getSession();
+        if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
+            response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
+            return;
+        }
+
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+        response.sendRedirect("inicioCliente");
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+
+        base = new Conexion();
+        int idExamen = Integer.parseInt(request.getParameter("idExamen"));
+        System.out.println(idExamen);
+        examen = obtenerExamen(idExamen);
+        posicionPregunta = examen.getUltimaPregunta();
+
+        switch (examen.getEstado()) {
+            case Examen.NO_EMPEZADO:
+            case Examen.EN_PROCESO:
+                obtenerReactivos();//falta poner la posicion en donde se quedo, temporalizador y guardar reactivos
+                break;
+            case Examen.CONCLUIDO:
+                //generar html para mostrar resultados y mostrarlo
+                break;
+        }
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html><html>\n"
@@ -73,7 +140,7 @@ public class aplicadorExamen extends HttpServlet {
                     + "        <div class=\"mdl-layout mdl-js-layout mdl-layout--fixed-header\">\n"
                     + "            <header class=\"mdl-layout__header\">\n"
                     + "                <div class=\"mdl-layout__header-row\">\n"
-                    + "                    <span class=\"mdl-layout-title\">Titulo del examen</span>\n"
+                    + "                    <span class=\"mdl-layout-title\">" + examen.getTitulo() + "</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"\">Nombre</a>\n"
@@ -90,30 +157,7 @@ public class aplicadorExamen extends HttpServlet {
                     + "            </div>\n"
                     + "            <main class=\"mdl-layout__content\">\n"
                     + "                <div class=\"page-content mdl-grid\">\n"
-                    + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivox\">\n"
-                    + "                        <form method=\"POST\" action=\"#\">\n"
-                    + "                            <p style=\"color: gray; font-size: 17px;\">\n"
-                    + "                                Pregunta muy larga\n"
-                    + "                            </p>\n"
-                    + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcionxA\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                    + "                                <input type=\"radio\" id=\"opcionxA\" class=\"mdl-radio__button\" name=\"opciones\" value=\"Opcion 1\" >\n"
-                    + "                                <span class=\"mdl-radio__label\">Opcion 1</span>\n"
-                    + "                            </label>\n"
-                    + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcionxB\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                    + "                                <input type=\"radio\" id=\"opcionxB\" class=\"mdl-radio__button\" name=\"opciones\" value=\"Opcion 2\" >\n"
-                    + "                                <span class=\"mdl-radio__label\">Opcion 2</span>\n"
-                    + "                            </label>\n"
-                    + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcionxC\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                    + "                                <input type=\"radio\" id=\"opcionxC\" class=\"mdl-radio__button\" name=\"opciones\" value=\"Opcion 3\" >\n"
-                    + "                                <span class=\"mdl-radio__label\">Opcion 3</span>\n"
-                    + "                            </label>\n"
-                    + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcionxD\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                    + "                                <input type=\"radio\" id=\"opcionxD\" class=\"mdl-radio__button\" name=\"opciones\" value=\"Opcion 4\" >\n"
-                    + "                                <span class=\"mdl-radio__label\">Opcion 4</span>\n"
-                    + "                            </label>\n"
-                    + "                            <input type=\"submit\" value=\"Siguiente\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">\n"
-                    + "                        </form>\n"
-                    + "                    </div>\n"
+                    + "                    " + htmlPreguntas + "\n"
                     + "                </div>\n"
                     + "            </main>\n"
                     + "        </div>\n"
@@ -122,33 +166,82 @@ public class aplicadorExamen extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    public Examen obtenerExamen(int idExamen) {
+        Examen examenx = null;
+        try {
+            base.conectar();
+            base.ejecuta("SET sql_mode=(SELECT REPLACE(@@sql_mode,\"ONLY_FULL_GROUP_BY\",\"\"));");
+            ResultSet rs = base.ejecutaQuery("select * from progre where idExamen = " + idExamen + " and idCliente = " + sesion.getAttribute("id") + ";");
+            if (rs.next()) {
+                examenx = new Examen(
+                        rs.getInt("IdExamen"),
+                        rs.getString("TituloExamen"),
+                        (String) sesion.getAttribute("nombre"),
+                        rs.getTimestamp("Fecha"),
+                        rs.getInt("Progreso"),
+                        rs.getInt("Calificacion"));
+            }
+            base.cierraConexion();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        }
+        return examenx;
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    public void obtenerReactivos() {
+        int index = 0;
+        reactivos = new Vector<>();
+        Reactivo reactivox;
+        try {
+            base.conectar();
+            ResultSet rs = base.ejecutaQuery("select * from mostraexa where idExamen = " + examen.getIdExamen() + ";");//"++"
+            while (rs.next()) {
+                index++;
+                reactivox = new Reactivo(
+                        rs.getInt("idPregunta"),
+                        rs.getString("pregunta"),
+                        rs.getString("opcionA"),
+                        rs.getString("opcionB"),
+                        rs.getString("opcionC"),
+                        rs.getString("opcionD"),
+                        Reactivo.SIN_RESPONDER
+                );
+                reactivos.add(reactivox);
+                htmlPreguntas += generarHTMLReactivo(reactivox, index);
+            }
+            base.cierraConexion();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public String generarHTMLReactivo(Reactivo reactivo, int i) {
+        String html = "<div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivo" + i + "\" style=\"visibility: visible;\" >\n"//visible, hidden
+                + "                        <form method=\"POST\" action=\"#\">\n"
+                + "                            <p style=\"color: gray; font-size: 17px;\">\n"
+                + "                                " + reactivo.getPregunta() + "\n"
+                + "                            </p>\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"A\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion"+i+"A\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionA() + "\" >\n"
+                + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionA() + "</span>\n"
+                + "                            </label>\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"B\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion"+i+"B\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionB() + "\" >\n"
+                + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionB() + "</span>\n"
+                + "                            </label>\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"C\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion"+i+"C\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionC() + "\" >\n"
+                + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionC() + "</span>\n"
+                + "                            </label>\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"D\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion"+i+"D\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionD() + "\" >\n"
+                + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionD() + "</span>\n"
+                + "                            </label>\n"
+                + "                            <input type=\"hidden\" name=\"idReactivo\" value=\"" + reactivo.getIdReactivo() + "\" />\n"
+                + "                            <input type=\"submit\" value=\"Siguiente\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">\n"
+                + "                        </form></div>";
+        return html;
     }
 
     /**

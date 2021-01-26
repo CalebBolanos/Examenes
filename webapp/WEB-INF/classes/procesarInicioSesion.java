@@ -68,7 +68,7 @@ public class procesarInicioSesion extends HttpServlet {
         System.out.println(usuario);
         System.out.println(contrasena);
         boolean verificado = false;
-
+        
         if (Validaciones.StringsNoVacios(usuario, contrasena)) {
             try {
                 Conexion base = new Conexion();
@@ -92,8 +92,8 @@ public class procesarInicioSesion extends HttpServlet {
                         sesion.setAttribute("materno", materno);
                         sesion.setAttribute("correo", correo);
                     } 
-                    base.cierraConexion();
                 }
+                base.cierraConexion();
             } catch (SQLException ex) {
                 System.out.println(ex.toString());
             }
