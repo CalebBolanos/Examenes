@@ -96,7 +96,7 @@ public class crearExamen extends HttpServlet {
                     + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
                     + "                        <h2 class=\"mdl-card__title-text\">Crear nuevo examen</h2>\n"
                     + "                        <p class=\"mdl-card__supporting-text\">Completa el siguiente formulario para asignar un nuevo examen:</p>\n"
-                    + "                        <form method=\"POST\" action=\"#\">\n"
+                    + "                        <form method=\"POST\" action=\"proceExamen\">\n"
                     + "                            <div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\" style=\"width: 100%\">\n"
                     + "                                <input class=\"mdl-textfield__input\" type=\"date\" id=\"fecha\" name=\"fecha\" required>\n"
                     + "                                <label class=\"mdl-textfield__label\" for=\"fecha\">Fecha</label>\n"

@@ -44,6 +44,10 @@
         <servlet-name>crearExamen</servlet-name>
         <servlet-class>crearExamen</servlet-class>
     </servlet>
+     <servlet>
+        <servlet-name>proceExamen</servlet-name>
+        <servlet-class>proceExamen</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>infoAdmin</servlet-name>
         <servlet-class>infoAdmin</servlet-class>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>crearExamen</servlet-name>
         <url-pattern>/crearExamen</url-pattern>
+    </servlet-mapping>
+<servlet-mapping>
+        <servlet-name>proceExamen</servlet-name>
+        <url-pattern>/proceExamen</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>infoAdmin</servlet-name>
