@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
  */
 public class procesarInicioSesion extends HttpServlet {
 
+    HttpSession sesion;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -84,7 +85,7 @@ public class procesarInicioSesion extends HttpServlet {
                         String materno = rs.getString("mat");
                         String correo = rs.getString("corr");
 
-                        HttpSession sesion = request.getSession();
+                        sesion = request.getSession();
                         sesion.setAttribute("id", id);
                         sesion.setAttribute("tipo", tipo);
                         sesion.setAttribute("nombre", nombre);
@@ -99,7 +100,15 @@ public class procesarInicioSesion extends HttpServlet {
             }
             
             if (verificado) {
-                response.sendRedirect("inicioCliente");
+                int tipoUsuario = (int)sesion.getAttribute("tipo");
+                switch (tipoUsuario){
+                    case 1:
+                        response.sendRedirect("inicioCliente");
+                        return;
+                    case 2:
+                        response.sendRedirect("inicioAdmin");
+                        
+                }
             } else {
                 response.sendRedirect("iniciarSesion");
             }
