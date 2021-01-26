@@ -8,10 +8,18 @@
         <servlet-name>procesarInicioSesion</servlet-name>
         <servlet-class>procesarInicioSesion</servlet-class>
     </servlet>
+	
     <servlet>
         <servlet-name>ProcesarRegistroAdmin</servlet-name>
         <servlet-class>ProcesarRegistroAdmin</servlet-class>
     </servlet>
+	
+	    <servlet>
+        <servlet-name>ProcesarRegistroCliente</servlet-name>
+        <servlet-class>ProcesarRegistroCliente</servlet-class>
+        </servlet>
+	
+	
     <servlet>
         <servlet-name>inicioCliente</servlet-name>
         <servlet-class>inicioCliente</servlet-class>
@@ -60,10 +68,18 @@
         <servlet-name>procesarInicioSesion</servlet-name>
         <url-pattern>/procesarInicioSesion</url-pattern>
     </servlet-mapping>
+	
+	
     <servlet-mapping>
         <servlet-name>ProcesarRegistroAdmin</servlet-name>
         <url-pattern>/ProcesarRegistroAdmin</url-pattern>
     </servlet-mapping>
+	
+	    <servlet-mapping>
+        <servlet-name>ProcesarRegistroCliente</servlet-name>
+        <url-pattern>/ProcesarRegistroCliente</url-pattern>
+        </servlet-mapping>
+	
     <servlet-mapping>
         <servlet-name>inicioCliente</servlet-name>
         <url-pattern>/inicioCliente</url-pattern>
