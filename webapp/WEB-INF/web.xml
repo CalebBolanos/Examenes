@@ -40,6 +40,10 @@
         <servlet-name>registroUsuarios</servlet-name>
         <servlet-class>registroUsuarios</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>cerrarSesion</servlet-name>
+        <servlet-class>cerrarSesion</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>iniciarSesion</servlet-name>
         <url-pattern>/iniciarSesion</url-pattern>
@@ -79,5 +83,9 @@
     <servlet-mapping>
         <servlet-name>registroUsuarios</servlet-name>
         <url-pattern>/registroUsuarios</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>cerrarSesion</servlet-name>
+        <url-pattern>/cerrarSesion</url-pattern>
     </servlet-mapping>
 </web-app>
