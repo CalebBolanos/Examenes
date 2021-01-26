@@ -76,7 +76,7 @@ public class aplicadorExamen extends HttpServlet {
                     + "                    <span class=\"mdl-layout-title\">Titulo del examen</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"\">Nombre</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"infoCliente\">Nombre</a>\n"
                     + "                        <a class=\"mdl-navigation__link\">Tiempo para pregunta: 00:00</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
