@@ -76,6 +76,7 @@ private Conexion base;
 				   if(rs.next()){
                     id=rs.getInt("idExamen");
                     ResultSet rs2=base.ejecutaQuery("call RandRe(\"" + id + "\", \"" + nom+ "\");");
+                    ResultSet rs3=base.ejecutaQuery("call ExaClie("+id+");");
 					if(rs2.next()){
                         if (rs2.getString("msj").equals("ok")) {
                             //JOptionPane.showMessageDialog(null, "Examen Agregado Corrrectamente");
