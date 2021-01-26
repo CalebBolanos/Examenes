@@ -29,6 +29,10 @@
         <servlet-class>anadirReactivo</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>anRe</servlet-name>
+        <servlet-class>anRe</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>crearExamen</servlet-name>
         <servlet-class>crearExamen</servlet-class>
     </servlet>
@@ -75,6 +79,10 @@
     <servlet-mapping>
         <servlet-name>anadirReactivo</servlet-name>
         <url-pattern>/anadirReactivo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>anRe</servlet-name>
+        <url-pattern>/anRe</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>crearExamen</servlet-name>
