@@ -85,7 +85,8 @@ public class aplicadorExamen extends HttpServlet {
         int idExamen = Integer.parseInt(request.getParameter("idExamen"));
         System.out.println(idExamen);
         examen = obtenerExamen(idExamen);
-        posicionPregunta = examen.getUltimaPregunta();
+        posicionPregunta = examen.getUltimaPregunta() + 1;
+        System.out.println("ps cliente " + posicionPregunta);
 
         switch (examen.getEstado()) {
             case Examen.NO_EMPEZADO:
@@ -106,6 +107,30 @@ public class aplicadorExamen extends HttpServlet {
                     + "        <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/icon?family=Material+Icons\">\n"
                     + "        <link rel=\"stylesheet\" href=\"https://code.getmdl.io/1.3.0/material.blue-indigo.min.css\" />\n"
                     + "        <script defer src=\"https://code.getmdl.io/1.3.0/material.min.js\"></script>\n"
+                    + "        <script type=\"text/javascript\">\n"
+                    + "        function sendData(form) {\n"
+                    + "                const XHR = new XMLHttpRequest();\n"
+                    + "                const FD = new FormData( form );\n"
+                    + "                XHR.addEventListener( \"load\", function(event) {\n"
+                    + "                  alert( event.target.responseText );\n"
+                    + "                } );\n"
+                    + "                XHR.addEventListener( \"error\", function( event ) {\n"
+                    + "                  //alert( 'Oops! Something went wrong.' );\n"
+                    + "                } );\n"
+                    + "                XHR.open( \"POST\", \"http://localhost:5050/procesarExamen\" );\n"
+                    + "\n"
+                    + "                XHR.send( FD );\n"
+                    + "            }\n"
+                    + "function submitForm(form) {\n"
+                    + "                console.log(form);\n"
+                    + "                sendData(form);\n"
+                    + "                return false;\n"
+                    + "            }"
+                    + "            function cargarTodo(){\n"
+                    + "             document.getElementById(\"reactivo" + posicionPregunta + "\").style.display = \"block\";\n"
+                    + "            }\n"
+                    + "            window.onload = cargarTodo;"
+                    + "        </script>"
                     + "        <style>\n"
                     + "            .seleccionado{\n"
                     + "                background: linear-gradient(to right, #00B4DB, #2948ff);\n"
@@ -164,6 +189,7 @@ public class aplicadorExamen extends HttpServlet {
                     + "    </body>\n"
                     + "</html>");
         }
+
     }
 
     public Examen obtenerExamen(int idExamen) {
@@ -217,28 +243,31 @@ public class aplicadorExamen extends HttpServlet {
     }
 
     public String generarHTMLReactivo(Reactivo reactivo, int i) {
-        String html = "<div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivo" + i + "\" style=\"visibility: visible;\" >\n"//visible, hidden
-                + "                        <form method=\"POST\" action=\"#\">\n"
+        String html = "<div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivo" + i + "\" style=\"display: none;\" >\n"//block, none
+                + "                        <form id=\"form" + i + "\" method=\"POST\" action=\"procesarExamen\" >\n"//target=\"_blank\"
                 + "                            <p style=\"color: gray; font-size: 17px;\">\n"
                 + "                                " + reactivo.getPregunta() + "\n"
                 + "                            </p>\n"
-                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"A\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                + "                                <input type=\"radio\" id=\"opcion"+i+"A\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionA() + "\" >\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion" + i + "A\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion" + i + "A\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionA() + "\" >\n"
                 + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionA() + "</span>\n"
                 + "                            </label>\n"
-                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"B\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                + "                                <input type=\"radio\" id=\"opcion"+i+"B\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionB() + "\" >\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion" + i + "B\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion" + i + "B\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionB() + "\" >\n"
                 + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionB() + "</span>\n"
                 + "                            </label>\n"
-                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"C\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                + "                                <input type=\"radio\" id=\"opcion"+i+"C\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionC() + "\" >\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion" + i + "C\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion" + i + "C\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionC() + "\" >\n"
                 + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionC() + "</span>\n"
                 + "                            </label>\n"
-                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion"+i+"D\" style=\"width: 100%; margin-bottom: 5px;\">\n"
-                + "                                <input type=\"radio\" id=\"opcion"+i+"D\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionD() + "\" >\n"
+                + "                            <label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"opcion" + i + "D\" style=\"width: 100%; margin-bottom: 5px;\">\n"
+                + "                                <input type=\"radio\" id=\"opcion" + i + "D\" class=\"mdl-radio__button\" name=\"opciones\" value=\"" + reactivo.getOpcionD() + "\" >\n"
                 + "                                <span class=\"mdl-radio__label\">" + reactivo.getOpcionD() + "</span>\n"
                 + "                            </label>\n"
                 + "                            <input type=\"hidden\" name=\"idReactivo\" value=\"" + reactivo.getIdReactivo() + "\" />\n"
+                + "                            <input type=\"hidden\" name=\"idExamen\" value=\"" + examen.getIdExamen() + "\" />\n"
+                + "                            <input type=\"hidden\" name=\"posicionPregunta\" value=\"" + i + "\" />\n"
+                + "                            <input type=\"hidden\" name=\"tipoTransaccion\" value=\"1\" />\n"
                 + "                            <input type=\"submit\" value=\"Siguiente\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">\n"
                 + "                        </form></div>";
         return html;
@@ -252,6 +281,7 @@ public class aplicadorExamen extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+
     }// </editor-fold>
 
 }

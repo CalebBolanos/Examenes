@@ -210,7 +210,7 @@ public class inicioCliente extends HttpServlet {
                                 + "                        <p style=\"color: gray\">\n"
                                 + "                            Calificacion:" + examenx.getCalificacion() + "\n"
                                 + "                        </p>\n"
-                                + "                        <form method=\"POST\" action=\"aplicadorExamen\">\n"
+                                + "                        <form method=\"POST\" action=\"resultados\">\n"
                                 + "                            <input type=\"hidden\" name=\"idExamen\" value=\""+examenx.getIdExamen()+"\" />\n"
                                 + "                            <input type=\"submit\" value=\"Ver Resultados\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" />\n"
                                 + "                        </form>"

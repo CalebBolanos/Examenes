@@ -44,6 +44,14 @@
         <servlet-name>cerrarSesion</servlet-name>
         <servlet-class>cerrarSesion</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>procesarExamen</servlet-name>
+        <servlet-class>procesarExamen</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>resultados</servlet-name>
+        <servlet-class>resultados</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>iniciarSesion</servlet-name>
         <url-pattern>/iniciarSesion</url-pattern>
@@ -87,5 +95,13 @@
     <servlet-mapping>
         <servlet-name>cerrarSesion</servlet-name>
         <url-pattern>/cerrarSesion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>procesarExamen</servlet-name>
+        <url-pattern>/procesarExamen</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resultados</servlet-name>
+        <url-pattern>/resultados</url-pattern>
     </servlet-mapping>
 </web-app>
