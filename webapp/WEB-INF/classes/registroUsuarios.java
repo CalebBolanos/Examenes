@@ -123,7 +123,7 @@ public class registroUsuarios extends HttpServlet {
                     + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
                     + "                        <h2 class=\"mdl-card__title-text\">Registro de Administradores</h2>\n"
                     + "                        <p class=\"mdl-card__supporting-text\">Completa el siguiente formulario para añadir un administrador</p>\n"
-                    + "                        <form method=\"POST\" action=\"#\">\n"
+                    + "                        <form method=\"POST\" action=\"ProcesarRegistroAdmin\">\n"
                     + "                            <div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label\" style=\"width: 100%\">\n"
                     + "                                <input class=\"mdl-textfield__input\" type=\"text\" id=\"nombreAdmin\" name=\"nombreAdmin\" required>\n"
                     + "                                <label class=\"mdl-textfield__label\" for=\"nombreAdmin\">Nombre</label>\n"
