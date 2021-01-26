@@ -6,17 +6,23 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
  * @author calebbolanos
  */
 public class inicioCliente extends HttpServlet {
+
+    ArrayList<Examen> examenes;
+    HttpSession sesion;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,15 +36,15 @@ public class inicioCliente extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        HttpSession sesion = request.getSession();
+
+        sesion = request.getSession();
         if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
             response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
             return;
         }
-        
+
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+            String htmlExamenes = obtenerExamenes();
             out.println("<html>\n"
                     + "    <head>\n"
                     + "        <title>Inicio</title>\n"
@@ -84,7 +90,7 @@ public class inicioCliente extends HttpServlet {
                     + "                    <span class=\"mdl-layout-title\">Inicio</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"infoCliente\">"+sesion.getAttribute("nombre")+"</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"infoCliente\">" + sesion.getAttribute("nombre") + "</a>\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"cerrarSesion\">Cerrar Sesion</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
@@ -98,19 +104,7 @@ public class inicioCliente extends HttpServlet {
                     + "            </div>\n"
                     + "            <main class=\"mdl-layout__content\">\n"
                     + "                <div class=\"page-content mdl-grid\">\n"
-                    + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
-                    + "                        <h2 class=\"mdl-card__title-text\">Titulo examen</h2><br>\n"
-                    + "                        <p style=\"color: gray\">\n"
-                    + "                            Fecha: <br/>\n"
-                    + "                            Duración:\n"
-                    + "                        </p>\n"
-                    + "                        <p style=\"color: gray\">\n"
-                    + "                            Ultima pregunta: \n"
-                    + "                        </p>\n"
-                    + "                        <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">\n"
-                    + "                            Comenzar Examen\n"
-                    + "                        </button>\n"
-                    + "                    </div>\n"
+                    + "                    "+htmlExamenes+"\n"
                     + "                </div>\n"
                     + "            </main>\n"
                     + "        </div>\n"
@@ -158,5 +152,78 @@ public class inicioCliente extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    public String obtenerExamenes() {
+        Conexion base = new Conexion();
+        examenes = new ArrayList<>();
+        Examen examenx;
+
+        String html = "";
+        try {
+            base.conectar();
+            base.ejecuta("SET sql_mode=(SELECT REPLACE(@@sql_mode,\"ONLY_FULL_GROUP_BY\",\"\"));");
+            ResultSet rs = base.ejecutaQuery("select * from Progre where idCliente = " + sesion.getAttribute("id") + ";");//"++"
+            while (rs.next()) {
+                examenx = new Examen(
+                        rs.getInt("IdExamen"),
+                        rs.getString("TituloExamen"),
+                        (String)sesion.getAttribute("nombre"),
+                        rs.getTimestamp("Fecha"),
+                        rs.getInt("Progreso"),
+                        rs.getInt("Calificacion"));
+                examenes.add(examenx);
+                System.out.println("si");
+                switch (examenx.getEstado()) {
+                    case Examen.NO_EMPEZADO:
+                        html += "<div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
+                                + "                        <h2 class=\"mdl-card__title-text\">" + examenx.getTitulo() + "</h2><br>\n"
+                                + "                        <p style=\"color: gray\">\n"
+                                + "                            Fecha:" + examenx.getFecha() + "<br/>\n"
+                                + "                        </p>\n"
+                                + "                        <form method=\"POST\" action=\"aplicadorExamen\">\n"
+                                + "                            <input type=\"hidden\" name=\"idExamen\" value=\""+examenx.getIdExamen()+"\" />\n"
+                                + "                            <input type=\"submit\" value=\"Comenzar Examen\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" />\n"
+                                + "                        </form>"
+                                + "                    </div>";
+                        break;
+                    case Examen.EN_PROCESO:
+                        html += "<div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
+                                + "                        <h2 class=\"mdl-card__title-text\">" + examenx.getTitulo() + "</h2><br>\n"
+                                + "                        <p style=\"color: gray\">\n"
+                                + "                            Fecha:" + examenx.getFecha() + "<br/>\n"
+                                + "                        </p>\n"
+                                + "                        <p style=\"color: gray\">\n"
+                                + "                            Ultima pregunta contestada:" + examenx.getUltimaPregunta() + "\n"
+                                + "                        </p>\n"
+                                + "                        <form method=\"POST\" action=\"aplicadorExamen\">\n"
+                                + "                            <input type=\"hidden\" name=\"idExamen\" value=\""+examenx.getIdExamen()+"\" />\n"
+                                + "                            <input type=\"submit\" value=\"Reanudar Examen\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" />\n"
+                                + "                        </form>"
+                                + "                    </div>";
+                        break;
+                    case Examen.CONCLUIDO:
+                        html += "<div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
+                                + "                        <h2 class=\"mdl-card__title-text\">" + examenx.getTitulo() + "</h2><br>\n"
+                                + "                        <p style=\"color: gray\">\n"
+                                + "                            Fecha:" + examenx.getFecha() + "<br/>\n"
+                                + "                        </p>\n"
+                                + "                        <p style=\"color: gray\">\n"
+                                + "                            Calificacion:" + examenx.getCalificacion() + "\n"
+                                + "                        </p>\n"
+                                + "                        <form method=\"POST\" action=\"resultados\">\n"
+                                + "                            <input type=\"hidden\" name=\"idExamen\" value=\""+examenx.getIdExamen()+"\" />\n"
+                                + "                            <input type=\"submit\" value=\"Ver Resultados\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" />\n"
+                                + "                        </form>"
+                                + "                    </div>";
+                        break;
+                }
+
+            }
+            base.cierraConexion();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return html;
+    }
 
 }

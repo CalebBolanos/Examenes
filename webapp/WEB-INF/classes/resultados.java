@@ -6,6 +6,8 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +18,10 @@ import javax.servlet.http.HttpSession;
  *
  * @author calebbolanos
  */
-public class infoCliente extends HttpServlet {
+public class resultados extends HttpServlet {
 
+    HttpSession sesion;
+    Conexion base;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -30,18 +34,51 @@ public class infoCliente extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        HttpSession sesion = request.getSession();
+        sesion = request.getSession();
         if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
             response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
             return;
         }
+        
+    }
 
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+        base = new Conexion();
+        int idExamen = Integer.parseInt(request.getParameter("idExamen"));
+        System.out.println(idExamen);
+        Examen examen = obtenerExamen(idExamen);
+        
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>\n"
                     + "<html>\n"
                     + "    <head>\n"
-                    + "        <title>Registrar Usuarios</title>\n"
+                    + "        <title>Resultados</title>\n"
                     + "        <meta charset=\"UTF-8\">\n"
                     + "        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
                     + "        <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/icon?family=Material+Icons\">\n"
@@ -81,70 +118,61 @@ public class infoCliente extends HttpServlet {
                     + "        <div class=\"mdl-layout mdl-js-layout mdl-layout--fixed-header\">\n"
                     + "            <header class=\"mdl-layout__header\">\n"
                     + "                <div class=\"mdl-layout__header-row\">\n"
-                    + "                    <span class=\"mdl-layout-title\">Información adicional</span>\n"
+                    + "                    <span class=\"mdl-layout-title\">Resultados</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"#\">" + sesion.getAttribute("nombre") + "</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"infoCliente\">Nombre</a>\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"cerrarSesion\">Cerrar Sesion</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
                     + "            </header>\n"
                     + "            <div class=\"mdl-layout__drawer\">\n"
-                    + "                <span class=\"mdl-layout-title\">Examenes</span>\n"
+                    + "                <span class=\"mdl-layout-title\">Examen</span>\n"
                     + "                <nav class=\"mdl-navigation\">\n"
-                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"inicioCliente\" >Incio</a>\n"
-                    + "                    <a class=\"mdl-navigation__link seleccionado\" href=\"#\">Información adicional</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"inicioCliente\" >Inicio</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"infoCliente\">Información adicional</a>\n"
                     + "                </nav>\n"
                     + "            </div>\n"
                     + "            <main class=\"mdl-layout__content\">\n"
                     + "                <div class=\"page-content mdl-grid\">\n"
-                    + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
-                    + "                        <h2 class=\"mdl-card__title-text\">Datos del cliente</h2><br>\n"
-                    + "                        <p style=\"color: gray\">Nombre:" + sesion.getAttribute("nombre") + " " + sesion.getAttribute("paterno") + " " + sesion.getAttribute("materno") + "</p>\n"
-                    + "                        <p style=\"color: gray\">Correo electronico: " + sesion.getAttribute("correo") + "</p>\n"
-                    + "                    </div>\n"
-                    + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\">\n"
-                    + "                        <h2 class=\"mdl-card__title-text\">Acerca de</h2><br>\n"
-                    + "                        <p style=\"color: gray\">Aplicador y evaluador de examenes de opción multiple <br>Proyecto de Programación Orientada a Objetos</p>\n"
+                    + "                    <div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivox\">\n"
+                    + "                       <h2 class=\"mdl-card__title-text\">Titulo del examen: "+examen.getTitulo()+"</h2><br>\n"
+                    + "                       <p style=\"color: gray; font-size: 17px;\">\n"
+                    + "                            Alumno que presento: "+examen.getNombrePresentaExamen()+"<br>\n"
+                    + "                            Fecha de aplicacion: "+examen.getFecha()+"<br>\n"
+                    + "                            Calificacion: "+examen.getCalificacion()+"<br>\n"
+                    + "                        </p>\n"
                     + "                    </div>\n"
                     + "                </div>\n"
                     + "            </main>\n"
                     + "        </div>\n"
                     + "    </body>\n"
-                    + "</html>\n"
-                    + "");
+                    + "</html>");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    public Examen obtenerExamen(int idExamen) {
+        Examen examenx = null;
+        try {
+            base.conectar();
+            base.ejecuta("SET sql_mode=(SELECT REPLACE(@@sql_mode,\"ONLY_FULL_GROUP_BY\",\"\"));");
+            ResultSet rs = base.ejecutaQuery("select * from progre where idExamen = " + idExamen + " and idCliente = " + sesion.getAttribute("id") + ";");
+            if (rs.next()) {
+                examenx = new Examen(
+                        rs.getInt("IdExamen"),
+                        rs.getString("TituloExamen"),
+                        (String) sesion.getAttribute("nombre"),
+                        rs.getTimestamp("Fecha"),
+                        rs.getInt("Progreso"),
+                        rs.getInt("Calificacion"));
+            }
+            base.cierraConexion();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        }
+        return examenx;
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
+    
     /**
      * Returns a short description of the servlet.
      *
