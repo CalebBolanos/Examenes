@@ -19,13 +19,13 @@ public class Examen {
     private Date fecha;
     private int idExamen, ultimaPregunta, calificacion, estado;
 
-    public Examen(int idExamen, String titulo, String nombrePresentaExamen, Date fecha, int ultimaPregunta, int calificación) {
+    public Examen(int idExamen, String titulo, String nombrePresentaExamen, Date fecha, int ultimaPregunta, int calificacion) {
         this.idExamen = idExamen;
         this.titulo = titulo;
         this.nombrePresentaExamen = nombrePresentaExamen;
         this.fecha = fecha;
         this.ultimaPregunta = ultimaPregunta;
-        this.calificacion = calificación;
+        this.calificacion = calificacion;
         setEstado();
     }
 
