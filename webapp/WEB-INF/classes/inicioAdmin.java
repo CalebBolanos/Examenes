@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,6 +30,14 @@ public class inicioAdmin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession sesion = request.getSession();
+        if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
+            response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
+            return;
+        }
+        if ((int) sesion.getAttribute("tipo") == 1) {
+            response.sendRedirect("inicioCliente");
+        }
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html><html>\n"
@@ -68,7 +77,7 @@ public class inicioAdmin extends HttpServlet {
                     + "                    <span class=\"mdl-layout-title\">Inicio</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"infoAdmin\">Nombre</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"infoAdmin\">" + sesion.getAttribute("nombre") + "</a>\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"cerrarSesion\">Cerrar Sesion</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
@@ -87,18 +96,18 @@ public class inicioAdmin extends HttpServlet {
                     + "                <div class=\"page-content layout\">\n"
                     + "                    <div>\n"
                     + "                        <h4>Menu principal</h4>\n"
-                    + "                        <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
+                    + "                        <a href=\"registroUsuarios\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
                     + "                            Registrar Usuarios\n"
-                    + "                        </button><br />\n"
-                    + "                        <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
+                    + "                        </a><br />\n"
+                    + "                        <a href=\"anadirReactivo\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
                     + "                            Añadir Reactivos\n"
-                    + "                        </button><br />\n"
-                    + "                        <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
+                    + "                        </a><br />\n"
+                    + "                        <a href=\"crearExamen\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
                     + "                            Crear Nuevo Examen\n"
-                    + "                        </button><br />\n"
-                    + "                        <button class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
+                    + "                        </a><br />\n"
+                    + "                        <a href=\"infoAdmin\" class=\"mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent botones\">\n"
                     + "                            Información adicional\n"
-                    + "                        </button>\n"
+                    + "                        </a>\n"
                     + "                    </div>\n"
                     + "                </div>\n"
                     + "            </main>\n"

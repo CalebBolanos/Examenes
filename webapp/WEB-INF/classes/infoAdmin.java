@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,8 +30,16 @@ public class infoAdmin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession sesion = request.getSession();
+        if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
+            response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
+            return;
+        }
+        if ((int) sesion.getAttribute("tipo") == 1) {
+            response.sendRedirect("inicioCliente");
+            return;
+        }
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html><html>\n"
                     + "    <head>\n"
                     + "        <title>Registrar Usuarios</title>\n"
@@ -76,7 +85,7 @@ public class infoAdmin extends HttpServlet {
                     + "                    <span class=\"mdl-layout-title\">Información adicional</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"\">Nombre</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"\">" + sesion.getAttribute("nombre") + "</a>\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"\">Cerrar Sesion</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
@@ -84,11 +93,11 @@ public class infoAdmin extends HttpServlet {
                     + "            <div class=\"mdl-layout__drawer\">\n"
                     + "                <span class=\"mdl-layout-title\">Examenes</span>\n"
                     + "                <nav class=\"mdl-navigation\">\n"
-                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"\" >Incio</a>\n"
-                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"\">Registrar Usuarios</a>\n"
-                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"\">Añadir Reactivos</a>\n"
-                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"\">Crear Nuevo Examen</a>\n"
-                    + "                    <a class=\"mdl-navigation__link seleccionado\" href=\"\">Información adicional</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"inicioAdmin\" >Incio</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"registroUsuarios\">Registrar Usuarios</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"anadirReactivos\">Añadir Reactivos</a>\n"
+                    + "                    <a class=\"mdl-navigation__link disponible\" href=\"crearExamen\">Crear Nuevo Examen</a>\n"
+                    + "                    <a class=\"mdl-navigation__link seleccionado\" href=\"#\">Información adicional</a>\n"
                     + "                </nav>\n"
                     + "            </div>\n"
                     + "            <main class=\"mdl-layout__content\">\n"

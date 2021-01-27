@@ -42,6 +42,10 @@ public class inicioCliente extends HttpServlet {
             response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
             return;
         }
+        if ((int) sesion.getAttribute("tipo") == 2) {
+            response.sendRedirect("inicioAdmin");
+            return;
+        }
 
         try (PrintWriter out = response.getWriter()) {
             String htmlExamenes = obtenerExamenes();

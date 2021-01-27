@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,6 +30,15 @@ public class registroUsuarios extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession sesion = request.getSession();
+        if (sesion.getAttribute("id") == null || sesion.getAttribute("tipo") == null) {
+            response.sendRedirect("iniciarSesion?respuesta=Sesion expirada. Vuelve a iniciar sesion");
+            return;
+        }
+        if ((int) sesion.getAttribute("tipo") == 1) {
+            response.sendRedirect("inicioCliente");
+            return;
+        }
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html><html>\n"
@@ -76,7 +86,7 @@ public class registroUsuarios extends HttpServlet {
                     + "                    <span class=\"mdl-layout-title\">Registrar Usuarios</span>\n"
                     + "                    <div class=\"mdl-layout-spacer\"></div>\n"
                     + "                    <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n"
-                    + "                        <a class=\"mdl-navigation__link\" href=\"infoAdmin\">Nombre</a>\n"
+                    + "                        <a class=\"mdl-navigation__link\" href=\"infoAdmin\">" + sesion.getAttribute("nombre") + "</a>\n"
                     + "                        <a class=\"mdl-navigation__link\" href=\"cerrarSesion\">Cerrar Sesion</a>\n"
                     + "                    </nav>\n"
                     + "                </div>\n"
