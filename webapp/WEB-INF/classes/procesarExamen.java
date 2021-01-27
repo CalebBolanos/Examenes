@@ -1,7 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Bolaños Ramos Caleb Salomon 
+ * García Marciano Edgar
+ * Hernández Oble Axel
+ * Olay Silis Jose Eduardo
+ * Proyecto final de Programación Orientada a Objetos
+ * Proyecto Aplicador y evaluador de examenes de opcion multiple
+ * Miercoles 26 de enero de 2021 
+ * 2CM3 
+ * Programación Orientada a Objetos
  */
 
 import java.io.IOException;
@@ -16,23 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author calebbolanos
- */
 public class procesarExamen extends HttpServlet {
 
     HttpSession sesion;
     Conexion base;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Servlet encargado de guardar la respuesta de un reactivo a la base de datos y 
+     * de calificar las respuestas de un examen
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -44,15 +41,6 @@ public class procesarExamen extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,12 +48,9 @@ public class procesarExamen extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Dontro de doPosr se escribio la logica para ir redirigiendo la peticion 
+     * del usuario en caso de que se quieran guardar reactivos o 
+     * calificar un examen
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -95,7 +80,11 @@ public class procesarExamen extends HttpServlet {
                 break;
         }
     }
-
+    
+    /**
+     * metodo encargado de hacer la conexion a la base de datos para guardar 
+     * la respuesta de un reactivo
+     */
     public void ponerRespuesta(int idReactivo, int idExamen, String respuesta, int posicionPregunta) {
         try {
             base.conectar();
@@ -116,6 +105,10 @@ public class procesarExamen extends HttpServlet {
         }
     }
 
+    /**
+     * metodo encargado de calificar el examen del cliente y hacer la conexion 
+     * a la base de datos para guardar dicha calificacion
+     */
     public void calificarExamen(int posicionPregunta, int idExamen) {
         int calificacion = 0;
         try {
@@ -143,6 +136,10 @@ public class procesarExamen extends HttpServlet {
         }
     }
 
+    /**
+     * metodo que genera codigo html en donde se encuentra un form 
+     * para mandar el id del examen con el metodo POST 
+     */
     public String regresar(int idExamen) {
         return ""
                 + "<!DOCTYPE html>\n"
@@ -164,14 +161,9 @@ public class procesarExamen extends HttpServlet {
                 + "</html>";
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

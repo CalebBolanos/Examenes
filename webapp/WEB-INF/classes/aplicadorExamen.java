@@ -1,11 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Bolaños Ramos Caleb Salomon 
+ * García Marciano Edgar
+ * Hernández Oble Axel
+ * Olay Silis Jose Eduardo
+ * Proyecto final de Programación Orientada a Objetos
+ * Proyecto Aplicador y evaluador de examenes de opcion multiple
+ * Miercoles 26 de enero de 2021 
+ * 2CM3 
+ * Programación Orientada a Objetos
  */
 
-//import evaluadorexamenes.Examen;
-//import evaluadorexamenes.Reactivo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
@@ -19,7 +23,8 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author calebbolanos
+ * Servlet en donde se genera dinamicamente codigo html para que el alumno 
+ * pueda responder los reactivos de un examen
  */
 public class aplicadorExamen extends HttpServlet {
 
@@ -33,13 +38,11 @@ public class aplicadorExamen extends HttpServlet {
     String htmlPreguntas = "";
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * En processRequest verificamos que para tanto los metodos doGet y doPost
+     * exista una sesion y que los atributos no esten nulos. En caso de que 
+     * esto suceda se redirige al inicio de sesion. 
+     * Si un administrador con sesion iniciada intenta entrar se le redigira 
+     * al inicio de su seccion
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,14 +59,8 @@ public class aplicadorExamen extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Redirige al inicio
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -73,12 +70,8 @@ public class aplicadorExamen extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * En do post se genera dinamicamente el codigo HTML utilizando otros metodos de la misma
+     * clase y asi mostrar al usuario los reactivos del examen
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -95,14 +88,13 @@ public class aplicadorExamen extends HttpServlet {
         switch (examen.getEstado()) {
             case Examen.NO_EMPEZADO:
             case Examen.EN_PROCESO:
-                obtenerReactivos();//falta poner la posicion en donde se quedo, temporalizador y guardar reactivos
+                obtenerReactivos();
                 break;
             case Examen.CONCLUIDO:
-                //generar html para mostrar resultados y mostrarlo
+                response.sendRedirect("inicioCliente");
                 break;
         }
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html><html>\n"
                     + "    <head>\n"
                     + "        <title>Registrar Usuarios</title>\n"
@@ -193,7 +185,13 @@ public class aplicadorExamen extends HttpServlet {
         }
 
     }
-
+    
+    
+    /**
+     * Este metodo obtiene la informacion de un examen dado su id y retorna 
+     * un objeto de tipo Examen el cual contiene la informacion obtenida de 
+     * la base de datos
+     */
     public Examen obtenerExamen(int idExamen) {
         Examen examenx = null;
         try {
@@ -215,7 +213,12 @@ public class aplicadorExamen extends HttpServlet {
         }
         return examenx;
     }
-
+    
+    /**
+     * metodo encargado de obtener informacion de los reactivos del examen a 
+     * aplicar. Cabe recalcar que aqui se acomoda dinamicamente la seccion de 
+     * html que contiene los reactivos con apoyo del metodo generarHTMLReactivo()
+     */
     public void obtenerReactivos() {
         int index = 0;
         reactivos = new Vector<>();
@@ -244,6 +247,11 @@ public class aplicadorExamen extends HttpServlet {
 
     }
 
+    /**
+     * metodo encargado de generar dinamicamente codigo HTML el cual acomoda 
+     * la informacion de un reactivo del examen dentro un form, el cual una 
+     * vez contestado se hace el request al servlet y se guarda en la base de datos
+     */
     public String generarHTMLReactivo(Reactivo reactivo, int i) {
         String html = "<div class=\"tarjeta mdl-cell mdl-cell--12-col\" id=\"reactivo" + i + "\" style=\"display: none;\" >\n"//block, none
                 + "                        <form id=\"form" + i + "\" method=\"POST\" action=\"procesarExamen\" >\n"//target=\"_blank\"
@@ -275,15 +283,10 @@ public class aplicadorExamen extends HttpServlet {
         return html;
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
 
-    }// </editor-fold>
+    }
 
 }
